@@ -65,7 +65,6 @@ fun HomeContent(
             refreshing = false
         }
     }
-
     val refreshState = rememberPullRefreshState(refreshing, ::refresh)
     LaunchedEffect(Unit) {
         viewModel.getWeatherForecast(cityName = queryText)

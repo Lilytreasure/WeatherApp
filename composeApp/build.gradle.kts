@@ -27,7 +27,7 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = true
+            isStatic = false
         }
     }
     
@@ -94,6 +94,10 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+            //SQl Delight cache
+            api(libs.sqlDelight.coroutinesExtensions)
+            api(libs.sqlDelight.primitiveAdapters)
+
         }
 
         iosMain.dependencies {
@@ -137,8 +141,8 @@ dependencies {
 
 sqldelight {
     databases {
-        create("MyDatabase") {
-            packageName.set("org.craftsilicon.app.db")
+        create("CraftSilliconDb") {
+            packageName.set("org.craftsilicon.project.db")
         }
     }
 }

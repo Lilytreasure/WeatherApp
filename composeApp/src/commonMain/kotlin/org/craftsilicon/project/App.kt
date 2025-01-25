@@ -48,13 +48,11 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import org.craftsilicon.project.di.appModule
 import org.craftsilicon.project.presentation.ui.navigation.rails.items.NavigationItem
 import org.craftsilicon.project.presentation.ui.navigation.rails.navbar.NavigationSideBar
 import org.craftsilicon.project.presentation.ui.navigation.tab.home.Home
 import org.craftsilicon.project.theme.AppTheme
 import org.craftsilicon.project.theme.LocalThemeIsDark
-import org.koin.compose.KoinApplication
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -62,13 +60,7 @@ internal fun App() = AppTheme {
     setSingletonImageLoaderFactory { context ->
         getAsyncImageLoader(context)
     }
-    KoinApplication(
-        application = {
-            modules(appModule)
-        }
-    ){
-        AppContent()
-    }
+    AppContent()
 }
 
 fun getAsyncImageLoader(context: PlatformContext) =
@@ -105,9 +97,6 @@ fun AppContent() {
                     tonalElevation = 8.dp
                 ) {
                     TabItem(Home)
-//                    TabItem(Analytics)
-//                    TabItem(News)
-//                    TabItem(Profile)
                 }
             }
         }) {
