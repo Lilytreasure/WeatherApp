@@ -3,11 +3,13 @@ package org.craftsilicon.project.presentation.ui.screens.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -65,6 +67,7 @@ fun HomeContent(
             refreshing = false
         }
     }
+
     val refreshState = rememberPullRefreshState(refreshing, ::refresh)
     LaunchedEffect(Unit) {
         viewModel.getWeatherForecast(cityName = queryText)
@@ -132,8 +135,8 @@ fun HomeContent(
                 // Displaying weather info
                 Text(
                     text = "City: ${data.city.name}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(8.dp)
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Text(
                     text = "Current Temp: ${data.list.firstOrNull()?.main?.temp ?: "N/A"} °C",
@@ -151,27 +154,49 @@ fun HomeContent(
             weatherData?.let { data ->
                 val groupedWeather = filterAndGroupWeatherData(data)
                 groupedWeather.forEach { (day, weatherItems) ->
-                    Column(modifier = Modifier.padding(8.dp)) {
+                    Column(modifier = Modifier.padding(top = 10.dp)) {
                         Text(
                             text = day,  // Display day (e.g., "Monday")
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
-                        weatherItems.forEach { weatherItem ->
-                            val dateTime =
-                                weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
-                            val time = formatTimeWithoutDateTimeFormatter(dateTime)
+                        LazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            weatherItems.forEach { weatherItem ->
+                                val dateTime =
+                                    weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
+                                val time = formatTimeWithoutDateTimeFormatter(dateTime)
+                                item {
+                                    Row(
+                                        modifier = Modifier.padding(end = 5.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column {
+                                            Text(
+                                                text = "Time: $time",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                modifier = Modifier.padding(bottom = 2.dp)
+                                            )
+                                            Text(
+                                                text = "Temp: ${weatherItem.main.temp}°C",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                modifier = Modifier.padding(bottom = 2.dp)
+                                            )
 
-                            Text(
-                                text = "Time: $time, Temp: ${weatherItem.main.temp}°C",
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(bottom = 2.dp)
-                            )
-                            Text(
-                                text = "Description: ${weatherItem.weather.firstOrNull()?.description}",
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(bottom = 2.dp)
-                            )
+                                        }
+                                        Text(
+                                            text = " ${weatherItem.weather.firstOrNull()?.description}",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            modifier = Modifier.padding(bottom = 2.dp)
+                                        )
+                                    }
+
+                                }
+
+                            }
+
                         }
                     }
                 }

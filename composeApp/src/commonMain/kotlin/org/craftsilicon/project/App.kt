@@ -134,27 +134,7 @@ fun AppContent() {
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        //TabNavigator(Analytics)
-                    }
-                }
-
-                2 -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        //TabNavigator(News)
-                    }
-                }
-
-                3 -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        // TabNavigator(Profile)
+                        //TabNavigator(Settings)
                     }
                 }
             }

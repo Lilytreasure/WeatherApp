@@ -26,11 +26,10 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         try {
             startKoin {
-                androidContext(applicationContext) // Pass the Android context here
-                modules(appModule) // Your Koin module
+                androidContext(applicationContext)
+                modules(appModule)
             }
         } catch (e: KoinApplicationAlreadyStartedException) {
-            // Catch any Koin initialization errors
             e.printStackTrace()
         }
         enableEdgeToEdge()
