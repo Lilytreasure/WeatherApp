@@ -13,11 +13,11 @@ import org.craftsilicon.project.domain.usecase.ResultState
 class MainViewModel(private val repository: Repository) : ViewModel() {
     private val _weather = MutableStateFlow<ResultState<WeatherResponse>>(ResultState.LOADING)
     var weather: StateFlow<ResultState<WeatherResponse>> = _weather.asStateFlow()
-    fun getWeatherForecast(){
+    fun getWeatherForecast(cityName: String){
         viewModelScope.launch {
             _weather.value = ResultState.LOADING
             try {
-                val response = repository.getWeatherForecast(city = "Nairobi",
+                val response = repository.getWeatherForecast(city = cityName,
                     apiKey = "cfe577b09f43deea2722462eea76e473",
                     units ="metric"
                 )

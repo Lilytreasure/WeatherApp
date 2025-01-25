@@ -1,5 +1,6 @@
 package org.craftsilicon.project.presentation.ui.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -35,15 +36,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import org.craftsilicon.project.domain.model.weather.WeatherItem
 import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.craftsilicon.project.domain.usecase.ResultState
 import org.craftsilicon.project.presentation.ui.components.ErrorBox
 import org.craftsilicon.project.presentation.ui.components.LoadingBox
 import org.craftsilicon.project.presentation.viewmodel.MainViewModel
 import org.craftsilicon.project.theme.LocalThemeIsDark
+import org.craftsilicon.project.utils.filterAndGroupWeatherData
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -53,12 +52,12 @@ fun HomeContent(
 ) {
     var isDark by LocalThemeIsDark.current
     var weatherData by remember { mutableStateOf<WeatherResponse?>(null) }
-    var queryText by remember { mutableStateOf("") }
+    var queryText by remember { mutableStateOf("Nairobi") }
     val refreshScope = rememberCoroutineScope()
     var refreshing by remember { mutableStateOf(false) }
     fun refresh() {
         refreshScope.launch {
-            viewModel.getWeatherForecast()
+            viewModel.getWeatherForecast(cityName = queryText)
             delay(1500)
             refreshing = false
         }
@@ -66,7 +65,7 @@ fun HomeContent(
 
     val refreshState = rememberPullRefreshState(refreshing, ::refresh)
     LaunchedEffect(Unit) {
-        viewModel.getWeatherForecast()
+        viewModel.getWeatherForecast(cityName =queryText )
     }
     val latestWeather by viewModel.weather.collectAsState()
 
@@ -75,7 +74,6 @@ fun HomeContent(
             val error = (latestWeather as ResultState.ERROR).message
             ErrorBox(error)
         }
-
         is ResultState.LOADING -> {
             LoadingBox()
         }
@@ -109,7 +107,11 @@ fun HomeContent(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = null,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp)
+                            .clickable{
+                                viewModel.getWeatherForecast(cityName = queryText)
+                            }
                     )
                 },
                 modifier = Modifier
@@ -123,26 +125,6 @@ fun HomeContent(
                 ),
                 shape = RoundedCornerShape(40.dp)
             )
-            weatherData?.let { data ->
-                Text(
-                    text = "City: ${data.city.name}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = "Current Temp: ${data.list.firstOrNull()?.main?.temp ?: "N/A"} °C",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = "Description: ${
-                        data.list.firstOrNull()?.weather?.firstOrNull()?.description ?: "N/A"
-                    }",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-
             weatherData?.let { data ->
                 // Displaying weather info
                 Text(
@@ -176,6 +158,11 @@ fun HomeContent(
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(bottom = 2.dp)
                             )
+                            Text(
+                                text = "Description, : ${weatherItem.weather.firstOrNull()?.description}",
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(bottom = 2.dp)
+                            )
                         }
                     }
                 }
@@ -190,21 +177,5 @@ fun HomeContent(
     }
 }
 
-fun String.toLocalDateTime(timeZone: TimeZone): LocalDateTime {
-    val dateTimeParts = this.split(" ")
-    val date = dateTimeParts[0]
-    val time = dateTimeParts[1]
-    return LocalDateTime.parse("${date}T$time")
-}
-
-fun filterAndGroupWeatherData(weatherResponse: WeatherResponse): Map<String, List<WeatherItem>> {
-    val weekdays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-    return weatherResponse.list.groupBy { item ->
-        val dateTime = item.dt_txt.toLocalDateTime(TimeZone.UTC)
-        dateTime.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-    }.filterKeys { dayName ->
-        dayName in weekdays
-    }
-}
 
 
