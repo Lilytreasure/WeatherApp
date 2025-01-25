@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
 import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.craftsilicon.project.domain.usecase.ResultState
 import org.craftsilicon.project.presentation.ui.components.ErrorBox
@@ -43,6 +44,8 @@ import org.craftsilicon.project.presentation.ui.components.LoadingBox
 import org.craftsilicon.project.presentation.viewmodel.MainViewModel
 import org.craftsilicon.project.theme.LocalThemeIsDark
 import org.craftsilicon.project.utils.filterAndGroupWeatherData
+import org.craftsilicon.project.utils.formatTimeWithoutDateTimeFormatter
+import org.craftsilicon.project.utils.toLocalDateTime
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -65,7 +68,7 @@ fun HomeContent(
 
     val refreshState = rememberPullRefreshState(refreshing, ::refresh)
     LaunchedEffect(Unit) {
-        viewModel.getWeatherForecast(cityName =queryText )
+        viewModel.getWeatherForecast(cityName = queryText)
     }
     val latestWeather by viewModel.weather.collectAsState()
 
@@ -74,6 +77,7 @@ fun HomeContent(
             val error = (latestWeather as ResultState.ERROR).message
             ErrorBox(error)
         }
+
         is ResultState.LOADING -> {
             LoadingBox()
         }
@@ -109,7 +113,7 @@ fun HomeContent(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
-                            .clickable{
+                            .clickable {
                                 viewModel.getWeatherForecast(cityName = queryText)
                             }
                     )
@@ -144,6 +148,8 @@ fun HomeContent(
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(8.dp)
                 )
+            }
+            weatherData?.let { data ->
                 val groupedWeather = filterAndGroupWeatherData(data)
                 groupedWeather.forEach { (day, weatherItems) ->
                     Column(modifier = Modifier.padding(8.dp)) {
@@ -153,13 +159,17 @@ fun HomeContent(
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                         weatherItems.forEach { weatherItem ->
+                            val dateTime =
+                                weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
+                            val time = formatTimeWithoutDateTimeFormatter(dateTime)
+
                             Text(
-                                text = "Time: ${weatherItem.dt_txt}, Temp: ${weatherItem.main.temp}°C",
+                                text = "Time: $time, Temp: ${weatherItem.main.temp}°C",
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(bottom = 2.dp)
                             )
                             Text(
-                                text = "Description, : ${weatherItem.weather.firstOrNull()?.description}",
+                                text = "Description: ${weatherItem.weather.firstOrNull()?.description}",
                                 style = MaterialTheme.typography.bodySmall,
                                 modifier = Modifier.padding(bottom = 2.dp)
                             )
