@@ -2,6 +2,10 @@ package org.craftsilicon.project.domain.model.weather
 import kotlinx.serialization.Serializable
 
 
+/**
+ *Important to set default values(encodeDefault) to avoid serialization failure
+ */
+
 @Serializable
 data class WeatherResponse(
     val cod: String = "",
