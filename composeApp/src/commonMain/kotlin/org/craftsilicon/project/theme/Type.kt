@@ -74,7 +74,7 @@ internal fun getTypography(): Typography {
         headlineLarge = TextStyle(
             fontFamily = poppins,
             fontWeight = FontWeight.Bold,
-            fontSize = 28.sp,
+            fontSize = 25.sp,
         ),
         headlineMedium = TextStyle(
             fontFamily = poppins,

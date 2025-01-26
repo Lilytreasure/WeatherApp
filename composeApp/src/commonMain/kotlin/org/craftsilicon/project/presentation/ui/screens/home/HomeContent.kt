@@ -186,7 +186,7 @@ fun HomeContent(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "City: ${data.city.name}",
+                                                text = data.city.name,
                                                 style = MaterialTheme.typography.titleLarge,
                                                 modifier = Modifier.padding(
                                                     top = 10.dp,
@@ -321,7 +321,7 @@ fun SearchView(
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp),
+            .height(50.dp),
         colors = TextFieldDefaults.colors(
             focusedTextColor = if (isDark) Color.White else Color.Black,
             unfocusedTextColor = if (isDark) Color.White else Color.LightGray,

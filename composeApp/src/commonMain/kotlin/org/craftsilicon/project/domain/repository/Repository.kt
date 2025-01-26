@@ -45,7 +45,7 @@ class Repository(
 
     private fun cacheWeatherData(city: String, weatherResponse: WeatherResponse) {
         val weatherDataString = Json.encodeToString(weatherResponse)
-        database.weatherEntityQueries.insertWeather(
+        database.weatherEntityQueries.insertOrReplaceWeather(
             cityName = city,
             weatherData = weatherDataString,
             lastUpdated = Clock.System.now().toEpochMilliseconds()
