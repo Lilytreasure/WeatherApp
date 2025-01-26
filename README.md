@@ -60,7 +60,7 @@
 - **kotlinx-coroutines**: `1.9.0`  
   _Kotlin library for asynchronous programming using coroutines._
 - **ktor**: `3.0.1`  
-  _Kotlin framework for building server and client HTTP applications._
+  _Kotlin framework for building server and client  applications._
 - **kotlinx-serialization**: `1.7.3`  
   _Kotlin serialization library for encoding/decoding data formats like JSON._
 - **kotlinx-datetime**: `0.6.1`  
@@ -113,8 +113,18 @@
 5. Click the **Build** button in Xcode to compile and run the app on the iOS simulator or device.
 
 6. **Return to Android Studio**.
-7. Select the **iosAPP** target from the run configurations drop-down.
+7. Select the **iosApp** target from the run configurations drop-down.
 8. Click the **Build** button in Android Studio to compile the project and deploy the app to the iOS simulator or device.
+
+## Approach
+I leveraged the power of Kotlin Multiplatform to build a unified solution that runs seamlessly across all platforms, including Android, iOS, and others. On Android, the app runs natively using Kotlin, taking full advantage of Kotlin’s features for performance and security. For iOS, I used Kotlin Multiplatform to share common business logic and manage platform-specific implementations, enabling the app to run on iOS devices while utilizing Compose UI for the user interface. This allowed me to maintain a consistent UI codebase across both Android and iOS, while also integrating platform-specific APIs and libraries. In some cases, I used Swift for iOS-specific features, leveraging Swift’s strengths for optimal integration with the iOS ecosystem, all while using Kotlin’s expect/actual mechanism for shared logic.
+
+By sharing core business logic between platforms, I was able to reduce duplication, ensuring consistent behavior and easy maintenance.
+
+To optimize performance, I implemented a robust caching mechanism. Weather data is stored locally, allowing the app to function smoothly even when offline. When network connectivity is available, the app intelligently updates the cached data with the latest weather information, ensuring users always receive fresh data.
+
+Kotlin was used throughout the project, enabling both shared logic and platform-specific implementations. This approach maximized code reuse while ensuring that each platform's unique features and performance requirements were properly addressed, resulting in an optimized and secure app experience across all devices.
+
 
 
 ## Challanges faced
