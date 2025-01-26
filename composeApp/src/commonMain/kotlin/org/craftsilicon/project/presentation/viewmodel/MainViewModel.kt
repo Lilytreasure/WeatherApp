@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.craftsilicon.project.domain.repository.Repository
 import org.craftsilicon.project.domain.usecase.ResultState
+import org.craftsilicon.project.utils.Constant
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
     private val _weather = MutableStateFlow<ResultState<Pair<WeatherResponse, Long>>>(ResultState.LOADING)
@@ -18,7 +19,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             _weather.value = ResultState.LOADING
             try {
                 val response = repository.getWeatherForecast(city = cityName,
-                    apiKey = "cfe577b09f43deea2722462eea76e473",
+                    apiKey = Constant.API_KEY,
                     units ="metric"
                 )
                 _weather.value = ResultState.SUCCESS(response)
