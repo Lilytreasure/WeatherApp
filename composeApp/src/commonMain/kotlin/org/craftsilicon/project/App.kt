@@ -86,22 +86,25 @@ fun AppContent() {
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
-
     TabNavigator(Home) { tabNavigator ->
-        Scaffold(bottomBar = {
+        Scaffold(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background),
+            bottomBar = {
             if (!showNavigationRail) {
                 NavigationBar(
                     modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.ime),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = contentColorFor(Color.Red),
-                    tonalElevation = 8.dp
+                   containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = contentColorFor(Color.Red)
                 ) {
                     TabItem(Home)
                 }
             }
         }) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .fillMaxSize().padding(
                     bottom = it.calculateBottomPadding(),
                     start = if (showNavigationRail) 80.dp else 0.dp
                 )
@@ -139,7 +142,6 @@ fun AppContent() {
                 }
             }
         }
-
     }
 }
 

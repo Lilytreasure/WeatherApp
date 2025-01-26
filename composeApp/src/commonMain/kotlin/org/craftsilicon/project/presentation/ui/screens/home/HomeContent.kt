@@ -1,5 +1,6 @@
 package org.craftsilicon.project.presentation.ui.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -21,6 +23,8 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,7 +45,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayAt
 import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.craftsilicon.project.domain.usecase.ResultState
 import org.craftsilicon.project.presentation.ui.components.AlertDialogExample
@@ -122,15 +128,15 @@ fun HomeContent(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
             .pullRefresh(state = refreshState),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
                 .windowInsetsPadding(WindowInsets.statusBars)
-                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 modifier = Modifier
@@ -143,112 +149,131 @@ fun HomeContent(
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
             }
-            TextField(
-                value = queryText,
-                singleLine = true,
-                onValueChange = {
-                    queryText = it
-                },
-                placeholder = { Text(text = "Search City name") },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .clickable {
-                                viewModel.getWeatherForecast(cityName = queryText)
-                            }
-                    )
-
-                },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = if (isDark) Color.White else Color.Black,
-                    unfocusedTextColor = if (isDark) Color.White else Color.LightGray,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(40.dp)
+            SearchView(
+                queryText = queryText,
+                onQueryTextChange = { queryText = it },
+                onSearchClick = { viewModel.getWeatherForecast(cityName = queryText) },
+                isDark = isDark
             )
-            weatherData?.let { data ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "City: ${data.city.name}",
-                            style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.padding(top = 10.dp, bottom = 7.dp)
-                        )
-                        Text(
-                            text = "Last update: ${lastupdate.toFormattedDateTime()}",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(top = 10.dp, bottom = 7.dp),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    Text(
-                        text = "Current Temp: ${data.list.firstOrNull()?.main?.temp ?: "N/A"} °C",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(bottom = 7.dp)
-                    )
-                    Text(
-                        text = "Description: ${
-                            data.list.firstOrNull()?.weather?.firstOrNull()?.description ?: "N/A"
-                        }",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(bottom = 10.dp)
-                    )
-                }
-            }
-            weatherData?.let { data ->
-                val groupedWeather = filterAndGroupWeatherData(data)
-                groupedWeather.forEach { (day, weatherItems) ->
-                    Column(modifier = Modifier.padding(top = 10.dp)) {
-                        Text(
-                            text = day,  // Display day (e.g., "Monday")
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            weatherItems.forEach { weatherItem ->
-                                val dateTime =
-                                    weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
-                                val time = formatTimeWithoutDateTimeFormatter(dateTime)
-                                item {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Column(modifier = Modifier.padding(end = 10.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                weatherData?.let { data ->
+                    val today =
+                        Clock.System.todayAt(TimeZone.currentSystemDefault())  // Get today's date
+                    val groupedWeather = filterAndGroupWeatherData(data)
+                    var todayDisplayed = false
+                    groupedWeather.forEach { (day, weatherItems) ->
+                        val dateTimeCheck =
+                            weatherItems.firstOrNull()?.dt_txt?.toLocalDateTime(TimeZone.currentSystemDefault())
+                        if (dateTimeCheck?.date == today && !todayDisplayed) {
+                            todayDisplayed = true
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp),
+                                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
+                            ) {
+                                Box(modifier = Modifier.padding(5.dp)) {
+                                    Column {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
                                             Text(
-                                                text = "Time: $time",
-                                                style = MaterialTheme.typography.bodySmall,
-                                                modifier = Modifier.padding(bottom = 2.dp)
+                                                text = "City: ${data.city.name}",
+                                                style = MaterialTheme.typography.titleLarge,
+                                                modifier = Modifier.padding(
+                                                    top = 10.dp,
+                                                    bottom = 7.dp
+                                                )
                                             )
                                             Text(
-                                                text = "Temp: ${weatherItem.main.temp}°C",
+                                                text = "Last update: ${lastupdate.toFormattedDateTime()}",
                                                 style = MaterialTheme.typography.bodySmall,
-                                                modifier = Modifier.padding(bottom = 2.dp)
+                                                modifier = Modifier.padding(
+                                                    top = 10.dp,
+                                                    bottom = 7.dp
+                                                ),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
                                             )
-
                                         }
-//                                        Text(
-//                                            text = " ${weatherItem.weather.firstOrNull()?.description}",
-//                                            style = MaterialTheme.typography.bodySmall,
-//                                            modifier = Modifier.padding(bottom = 2.dp)
-//                                        )
+                                        Text(
+                                            text = "Today",
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            modifier = Modifier.padding(bottom = 4.dp)
+                                        )
+                                        LazyRow(
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            weatherItems.forEach { weatherItem ->
+                                                val dateTime =
+                                                    weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
+                                                val timeFormat =
+                                                    formatTimeWithoutDateTimeFormatter(dateTime)
+                                                item {
+                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                        Column(modifier = Modifier.padding(end = 10.dp)) {
+                                                            Text(
+                                                                text = "Time: $timeFormat",
+                                                                style = MaterialTheme.typography.bodySmall,
+                                                                modifier = Modifier.padding(bottom = 2.dp)
+                                                            )
+                                                            Text(
+                                                                text = "Temp: ${weatherItem.main.temp}°C",
+                                                                style = MaterialTheme.typography.bodySmall,
+                                                                modifier = Modifier.padding(bottom = 2.dp)
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (dateTimeCheck?.date != today) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(top = 10.dp)
+                            ) {
+                                Text(
+                                    text = day,  // Display day (e.g., "Monday")
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.inverseOnSurface)
+                                        .padding(10.dp)
+                                ) {
+                                    weatherItems.forEach { weatherItem ->
+                                        val dateTime =
+                                            weatherItem.dt_txt.toLocalDateTime(TimeZone.currentSystemDefault())
+                                        val time = formatTimeWithoutDateTimeFormatter(dateTime)
+                                        item {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Column(modifier = Modifier.padding(end = 10.dp)) {
+                                                    Text(
+                                                        text = "Time: $time",
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        modifier = Modifier.padding(bottom = 2.dp)
+                                                    )
+                                                    Text(
+                                                        text = "Temp: ${weatherItem.main.temp}°C",
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        modifier = Modifier.padding(bottom = 2.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -265,6 +290,49 @@ fun HomeContent(
         )
     }
 }
+
+@Composable
+fun SearchView(
+    queryText: String,
+    onQueryTextChange: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isDark: Boolean = false
+) {
+    TextField(
+        value = queryText,
+        singleLine = true,
+        onValueChange = onQueryTextChange,
+        placeholder = {
+            Text(
+                text = "Search City",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
+        },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .clickable { onSearchClick() }
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(45.dp),
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = if (isDark) Color.White else Color.Black,
+            unfocusedTextColor = if (isDark) Color.White else Color.LightGray,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(40.dp),
+        textStyle = MaterialTheme.typography.bodySmall
+    )
+}
+
 
 
 
