@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS weather (
+    cityName TEXT NOT NULL PRIMARY KEY,
+    weatherData TEXT NOT NULL,
+    lastUpdated INTEGER NOT NULL
+);
+
+insertOrReplaceWeather:
+INSERT OR REPLACE INTO weather (cityName, weatherData, lastUpdated)
+VALUES (?, ?, ?);
+
+getWeather:
+SELECT cityName, weatherData, lastUpdated
+FROM weather
+WHERE cityName = ?
+LIMIT 1;

@@ -48,13 +48,11 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.CachePolicy
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import org.craftsilicon.project.di.appModule
 import org.craftsilicon.project.presentation.ui.navigation.rails.items.NavigationItem
 import org.craftsilicon.project.presentation.ui.navigation.rails.navbar.NavigationSideBar
 import org.craftsilicon.project.presentation.ui.navigation.tab.home.Home
 import org.craftsilicon.project.theme.AppTheme
 import org.craftsilicon.project.theme.LocalThemeIsDark
-import org.koin.compose.KoinApplication
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -62,13 +60,7 @@ internal fun App() = AppTheme {
     setSingletonImageLoaderFactory { context ->
         getAsyncImageLoader(context)
     }
-    KoinApplication(
-        application = {
-            modules(appModule)
-        }
-    ){
-        AppContent()
-    }
+    AppContent()
 }
 
 fun getAsyncImageLoader(context: PlatformContext) =
@@ -94,25 +86,25 @@ fun AppContent() {
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
-
     TabNavigator(Home) { tabNavigator ->
-        Scaffold(bottomBar = {
+        Scaffold(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background),
+            bottomBar = {
             if (!showNavigationRail) {
                 NavigationBar(
                     modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.ime),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = contentColorFor(Color.Red),
-                    tonalElevation = 8.dp
+                   containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = contentColorFor(Color.Red)
                 ) {
                     TabItem(Home)
-//                    TabItem(Analytics)
-//                    TabItem(News)
-//                    TabItem(Profile)
                 }
             }
         }) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .fillMaxSize().padding(
                     bottom = it.calculateBottomPadding(),
                     start = if (showNavigationRail) 80.dp else 0.dp
                 )
@@ -145,32 +137,11 @@ fun AppContent() {
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        //TabNavigator(Analytics)
-                    }
-                }
-
-                2 -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        //TabNavigator(News)
-                    }
-                }
-
-                3 -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        // TabNavigator(Profile)
+                        //TabNavigator(Settings)
                     }
                 }
             }
         }
-
     }
 }
 

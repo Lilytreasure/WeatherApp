@@ -7,6 +7,6 @@ interface CraftSiliconApi {
         city: String,
         apiKey: String,
         units: String = "metric"
-    ): WeatherResponse
+    ): Pair<WeatherResponse, Long>
 
 }
