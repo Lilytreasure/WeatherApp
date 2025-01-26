@@ -30,9 +30,11 @@ val appModule = module {
                 )
             }
             install(Logging) {
+                //Todo--Remove logger in prod
                 level = LogLevel.ALL
                 logger = object : Logger {
                     override fun log(message: String) {
+                        //Todo--Remove prnt in prod
                         println(message)
                     }
                 }

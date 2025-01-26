@@ -27,6 +27,9 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
+    /**
+     *Fall back to default state
+     */
     fun resetWeatherState() {
         _weather.value = ResultState.EMPTY
     }
