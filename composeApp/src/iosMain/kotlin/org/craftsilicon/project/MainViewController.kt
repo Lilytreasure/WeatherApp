@@ -11,7 +11,7 @@ fun MainViewController() = ComposeUIViewController {
             modules(appModule)
         }
     } catch (e: KoinApplicationAlreadyStartedException) {
-        e.printStackTrace()
+       // e.printStackTrace()
     }
     App()
 }

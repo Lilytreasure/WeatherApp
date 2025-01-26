@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyRow
@@ -41,8 +43,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -141,7 +146,7 @@ fun HomeContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Start
             ) {
                 Text(
                     text = "Weather App",
@@ -162,6 +167,7 @@ fun HomeContent(
                     .verticalScroll(rememberScrollState())
             ) {
                 weatherData?.let { data ->
+
                     val today =
                         Clock.System.todayAt(TimeZone.currentSystemDefault())  // Get today's date
                     val groupedWeather = filterAndGroupWeatherData(data)
@@ -231,6 +237,19 @@ fun HomeContent(
                                                                 modifier = Modifier.padding(bottom = 2.dp)
                                                             )
                                                         }
+                                                        val iconCode =
+                                                            weatherItem.weather.firstOrNull()?.icon.orEmpty()
+                                                        val iconUrl =
+                                                            "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+                                                        val painter =
+                                                            asyncPainterResource(data = iconUrl)
+                                                        KamelImage(
+                                                            { painter },
+                                                            contentDescription = "Profile",
+                                                            modifier = Modifier
+                                                                .size(70.dp),
+                                                            contentScale = ContentScale.Crop
+                                                        )
                                                     }
                                                 }
                                             }
@@ -272,6 +291,18 @@ fun HomeContent(
                                                         modifier = Modifier.padding(bottom = 2.dp)
                                                     )
                                                 }
+                                                val iconCode =
+                                                    weatherItem.weather.firstOrNull()?.icon.orEmpty()
+                                                val iconUrl =
+                                                    "https://openweathermap.org/img/wn/${iconCode}@2x.png"
+                                                val painter = asyncPainterResource(data = iconUrl)
+                                                KamelImage(
+                                                    { painter },
+                                                    contentDescription = "Profile",
+                                                    modifier = Modifier
+                                                        .size(65.dp),
+                                                    contentScale = ContentScale.Crop
+                                                )
                                             }
                                         }
                                     }

@@ -24,6 +24,9 @@ class AndroidApp : Application() {
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        /**
+         *Android context required by Koin
+         */
         try {
             startKoin {
                 androidContext(applicationContext)

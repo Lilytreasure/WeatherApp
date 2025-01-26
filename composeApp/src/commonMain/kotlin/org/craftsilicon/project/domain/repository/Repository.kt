@@ -34,7 +34,9 @@ class Repository(
         return apiResponse to Clock.System.now().toEpochMilliseconds()
 
     }
-
+    /**
+     *Read weather data from local storage
+     */
     private fun getWeatherFromCache(city: String): Pair<WeatherResponse, Long>? {
         val cachedData = database.weatherEntityQueries.getWeather(city).executeAsOneOrNull()
         return cachedData?.let {
@@ -42,7 +44,9 @@ class Repository(
             weatherResponse to it.lastUpdated
         }
     }
-
+    /**
+     *Cache weather data in local storage
+     */
     private fun cacheWeatherData(city: String, weatherResponse: WeatherResponse) {
         val weatherDataString = Json.encodeToString(weatherResponse)
         database.weatherEntityQueries.insertOrReplaceWeather(

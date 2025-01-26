@@ -2,6 +2,9 @@ package org.craftsilicon.project.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ *Global colors Config
+ */
 
 val Black = Color(0xFF090f0b)
 

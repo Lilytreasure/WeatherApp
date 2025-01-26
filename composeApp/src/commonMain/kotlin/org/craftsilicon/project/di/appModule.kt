@@ -30,10 +30,12 @@ val appModule = module {
                 )
             }
             install(Logging) {
-                level = LogLevel.ALL
+                //Todo--Remove logger in prod
+                level = LogLevel.NONE
                 logger = object : Logger {
                     override fun log(message: String) {
-                        println(message)
+                        //Todo--Remove prnt in prod
+                        //println(message)
                     }
                 }
                 filter { filter -> filter.url.host.contains("openweathermap.org") }
