@@ -10,8 +10,6 @@ import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-//Todo--Set cache stale policy
-
 class Repository(
     private val cryptoClient: CraftSiliconClient,
 ) : CraftSiliconApi, KoinComponent {
@@ -20,24 +18,31 @@ class Repository(
         city: String,
         apiKey: String,
         units: String
-    ): WeatherResponse {
-        val cachedWeather = getWeatherFromCache(city)
-        if (cachedWeather != null) {
-            // Return cached data if available
-            return cachedWeather
+    ): Pair<WeatherResponse, Long> {
+
+        val apiResponse = try {
+            cryptoClient.getWeatherForecast(city, apiKey, units)
+        } catch (e: Exception) {
+            val cachedWeather = getWeatherFromCache(city)
+            if (cachedWeather != null) {
+                return cachedWeather
+            } else {
+                throw e
+            }
         }
-        // If no cached data, fetch from the API
-        val apiResponse = cryptoClient.getWeatherForecast(city, apiKey, units)
-        // Cache the newly fetched data
         cacheWeatherData(city, apiResponse)
-        return apiResponse
+        return apiResponse to Clock.System.now().toEpochMilliseconds()
+
     }
-    private fun getWeatherFromCache(city: String): WeatherResponse? {
+
+    private fun getWeatherFromCache(city: String): Pair<WeatherResponse, Long>? {
         val cachedData = database.weatherEntityQueries.getWeather(city).executeAsOneOrNull()
         return cachedData?.let {
-            Json.decodeFromString<WeatherResponse>(it.weatherData)
+            val weatherResponse = Json.decodeFromString<WeatherResponse>(it.weatherData)
+            weatherResponse to it.lastUpdated
         }
     }
+
     private fun cacheWeatherData(city: String, weatherResponse: WeatherResponse) {
         val weatherDataString = Json.encodeToString(weatherResponse)
         database.weatherEntityQueries.insertWeather(

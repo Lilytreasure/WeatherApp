@@ -97,6 +97,8 @@ kotlin {
             //SQl Delight cache
             api(libs.sqlDelight.coroutinesExtensions)
             api(libs.sqlDelight.primitiveAdapters)
+            //Conectivity
+            implementation("com.plusmobileapps:konnectivity:0.1-alpha01")
 
         }
 
