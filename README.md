@@ -48,13 +48,13 @@
 - **Koin Annotations**: `1.3.1`  
   _Koin annotations for dependency injection in Kotlin._
 - **Lifecycle ViewModel Compose**: `2.8.4`  
-  _Jetpack Compose integration with ViewModel and LiveData._
+  _Compose integration with ViewModel._
 - **Voyager**: `1.1.0-beta03`  
-  _Navigation library for Jetpack Compose._
+  _Navigation library for  Compose._
 - **Napier**: `2.7.1`  
-  _Logging library for Kotlin and Jetpack Compose._
+  _Logging library for Kotlin and Compose._
 - **Build Config**: `5.3.5`  
-  _Build-time configuration management for Android._
+  _Build-time configuration management ._
 
 ## Kotlinx Libraries
 - **kotlinx-coroutines**: `1.9.0`  
