@@ -32,9 +32,9 @@ fun extractErrorMessage(fullError: String): String {
     return try {
         val regex = Regex("\"message\":\"(.*?)\"")
         regex.find(fullError)?.groupValues?.get(1)
-            ?: "An unknown error occurred check your internet connection"
+            ?: "An unknown error occurred kindly check your internet connection"
     } catch (e: Exception) {
-        "An unknown error occurred check your internet connection"
+        "An unknown error occurred kindly check your internet connection"
     }
 }
 

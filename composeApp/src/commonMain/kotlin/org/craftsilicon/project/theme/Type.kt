@@ -15,6 +15,10 @@ import craftsilicon.composeapp.generated.resources.poppins_regular
 import org.jetbrains.compose.resources.Font
 
 
+/**
+ *Global Typography config
+ */
+
 @Composable
 fun poppins(): FontFamily {
     val poppinsRegular =

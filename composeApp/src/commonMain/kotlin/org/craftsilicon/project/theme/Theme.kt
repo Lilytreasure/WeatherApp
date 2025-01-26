@@ -8,6 +8,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
+/**
+ *Global Theme config
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = primaryColor,
     secondary = Green300,

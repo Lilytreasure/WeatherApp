@@ -62,7 +62,9 @@ internal fun App() = AppTheme {
     }
     AppContent()
 }
-
+/**
+ *To cache weather icons in device cache
+ */
 fun getAsyncImageLoader(context: PlatformContext) =
     ImageLoader.Builder(context)
         .crossfade(true)
@@ -137,6 +139,7 @@ fun AppContent() {
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background)
                     ) {
+                        //Todo--Create tab to  change app settings
                         //TabNavigator(Settings)
                     }
                 }
