@@ -98,10 +98,18 @@
 </div>
 
 ## Running the Project/Build
-Add  API_KEY=<Plain api key without quotes> On  Android Studio  local.properties file
-- Ensure you spell the  API_KEY as  specified to avoid errors while  generating the key
-- Then run ./gradlew build
-- The key will be generated before compilation
+
+To set up the API key, follow these steps:
+
+1. Open **Android Studio** and navigate to the `local.properties` file.
+2. Add the following line (without quotes):
+
+   ```properties
+   API_KEY=<Your Plain API Key>
+   
+   Ensure you spell API_KEY exactly as specified to avoid errors during key generation. 
+ 3.  Run the following command to build the project while generating the key:
+  ./gradlew build
 ### Android
 1. **Open Android Studio**.
 2. **Open the project** as a whole and **and not  the `android` module directly** to see all configurations.
