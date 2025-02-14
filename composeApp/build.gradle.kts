@@ -1,6 +1,6 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +11,53 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqlDelight)
 }
+
+val localProperties = Properties()
+val file = rootProject.file("local.properties")
+if (file.exists()) {
+    localProperties.load(file.inputStream())
+}
+
+val apiKey = localProperties.getProperty("API_KEY", "").trim()
+
+val generatedDir = layout.buildDirectory.dir("generated/source/apiKeys")
+
+tasks.register("generateApiKey") {
+    val outputDir = generatedDir.get().asFile
+    val packageDir = File(outputDir, "org/craftsilicon/project")
+        val file = File(packageDir, "ApiKeys.kt")
+
+    doLast {
+        packageDir.mkdirs()
+
+        file.writeText(
+            """
+            package org.craftsilicon.project
+
+
+            object ApiKeys {
+                const val API_KEY = "$apiKey"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            kotlin.srcDirs(generatedDir.get().asFile.absolutePath)
+        }
+    }
+}
+/**
+ *  Ensure API key generation runs before compilation
+ */
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn("generateApiKey")
+}
+
+
 
 kotlin {
     androidTarget {
