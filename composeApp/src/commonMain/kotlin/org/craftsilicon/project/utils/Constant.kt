@@ -7,6 +7,6 @@ object Constant {
      *Not good practise to keep the api key here
      * How ever you wont be able to run the app without the key that was given to me
      */
-    const val API_KEY="cfe577b09f43deea2722462eea76e473"
+    const val API_KEY="add key as instructed on readme"
 
 }
