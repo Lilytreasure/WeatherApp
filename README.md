@@ -109,7 +109,9 @@ To set up the API key, follow these steps:
    
    Ensure you spell API_KEY exactly as specified to avoid errors during key generation. 
  3.  Run the following command to build the project while generating the key:
-  ./gradlew build
+4.  ```properties
+      ./gradlew build
+ 
 ### Android
 1. **Open Android Studio**.
 2. **Open the project** as a whole and **and not  the `android` module directly** to see all configurations.
