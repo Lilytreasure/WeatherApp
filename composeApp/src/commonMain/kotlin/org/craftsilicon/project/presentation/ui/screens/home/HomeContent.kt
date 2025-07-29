@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayAt
+import kotlinx.datetime.todayIn
 import org.craftsilicon.project.domain.model.weather.WeatherResponse
 import org.craftsilicon.project.domain.usecase.ResultState
 import org.craftsilicon.project.presentation.ui.components.AlertDialogExample
@@ -169,7 +171,7 @@ fun HomeContent(
                 weatherData?.let { data ->
 
                     val today =
-                        Clock.System.todayAt(TimeZone.currentSystemDefault())  // Get today's date
+                        Clock.System.todayIn(TimeZone.currentSystemDefault())  // Get today's date
                     val groupedWeather = filterAndGroupWeatherData(data)
                     var todayDisplayed = false
                     groupedWeather.forEach { (day, weatherItems) ->
@@ -270,8 +272,10 @@ fun HomeContent(
                                 LazyRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .clip(shape = RoundedCornerShape(10.dp))
                                         .background(MaterialTheme.colorScheme.inverseOnSurface)
                                         .padding(10.dp)
+
                                 ) {
                                     weatherItems.forEach { weatherItem ->
                                         val dateTime =

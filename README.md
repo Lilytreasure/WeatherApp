@@ -129,7 +129,12 @@ To set up the API key, follow these steps:
 7. Select the **iosApp** target from the run configurations drop-down.
 8. Click the **Build** button in Android Studio to compile the project and deploy the app to the iOS simulator or device.
 
-## Approach
+
+### Desktop
+ 1.  ```properties
+       ./gradlew :composeApp:jvmRun -DmainClass=org.craftsilicon.MainKt
+  
+###  Approach
 I leveraged the power of Kotlin Multiplatform to build a unified solution that runs seamlessly across all platforms, including Android, iOS, and others. On Android, the app runs natively using Kotlin, taking full advantage of Kotlin’s features for performance and security. For iOS, I used Kotlin Multiplatform to share common business logic and manage platform-specific implementations, enabling the app to run on iOS devices while utilizing Compose UI for the user interface. This allowed me to maintain a consistent UI codebase across both Android and iOS, while also integrating platform-specific APIs and libraries. In some cases, I used Swift for iOS-specific features, leveraging Swift’s strengths for optimal integration with the iOS ecosystem, all while using Kotlin’s expect/actual mechanism for shared logic.
 
 By sharing core business logic between platforms, I was able to reduce duplication, ensuring consistent behavior and easy maintenance.
