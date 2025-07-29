@@ -1,3 +1,4 @@
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
@@ -25,7 +26,7 @@ val generatedDir = layout.buildDirectory.dir("generated/source/apiKeys")
 tasks.register("generateApiKey") {
     val outputDir = generatedDir.get().asFile
     val packageDir = File(outputDir, "org/craftsilicon/project")
-        val file = File(packageDir, "ApiKeys.kt")
+    val file = File(packageDir, "ApiKeys.kt")
 
     doLast {
         packageDir.mkdirs()
@@ -66,7 +67,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+    jvm()
     listOf(
         iosX64(),
         iosArm64(),
@@ -77,16 +78,23 @@ kotlin {
             isStatic = false
         }
     }
-    
+
+
+    js {
+        browser()
+    }
+
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             //Added
             implementation(compose.uiTooling)
             implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.ktor.client.okhttp)
+            //Ktor
+            implementation(libs.ktor.client.android)
             //Android Local cache
             implementation(libs.sqlDelight.driver.android)
             implementation(project.dependencies.platform("io.insert-koin:koin-bom:4.0.0"))
@@ -116,10 +124,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             //Viewmodel
             implementation(libs.lifecycle.viewmodel.compose)
-            implementation(libs.ktor.core)
-            implementation(libs.ktor.client.content.negociation)
-            implementation(libs.ktor.client.serialization.json)
-            implementation(libs.ktor.client.logging)
+
+            //Ktor
+            implementation(libs.bundles.ktor.common)
+
             //Serializer
             implementation(libs.kotlinx.serialization.json)
             //Date/Time
@@ -135,7 +143,7 @@ kotlin {
             implementation(libs.kamel.image)
             implementation(libs.kamel.image.default)
             implementation(libs.bignum)
-            implementation(libs.ktor.core)
+
             //coil image loader and cache
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
@@ -145,7 +153,8 @@ kotlin {
             api(libs.sqlDelight.coroutinesExtensions)
             api(libs.sqlDelight.primitiveAdapters)
             //Conectivity
-            implementation("com.plusmobileapps:konnectivity:0.1-alpha01")
+            //implementation("com.plusmobileapps:konnectivity:0.1-alpha01")
+            api(libs.connectivity.compose)
 
         }
 
@@ -154,6 +163,23 @@ kotlin {
             //iOS Local cache
             implementation(libs.sqlDelight.driver.native)
         }
+        // For hot-reload
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.java)
+            implementation(compose.desktop.currentOs)
+            implementation(libs.logback.classic)
+            implementation(libs.sqlDelight.driver.jvm)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.slf4j)
+        }
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
+            implementation("app.cash.sqldelight:web-worker-driver:2.0.2")
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.0.2"))
+            implementation(npm("sql.js", "1.6.2"))
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
+        }
+        jvmToolchain(17)
     }
 }
 
@@ -195,4 +221,12 @@ sqldelight {
         }
     }
 }
+
+compose.desktop {
+    application {
+        mainClass = "org.craftsilicon.MainKt" // Current setting based on your last confirmation
+    }
+}
+
+
 
