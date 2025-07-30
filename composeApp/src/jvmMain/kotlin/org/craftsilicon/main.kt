@@ -5,13 +5,14 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import org.craftsilicon.project.App
 import org.craftsilicon.project.di.appModule
+import org.craftsilicon.project.platformModule
 import org.koin.core.context.startKoin
 import org.koin.core.error.KoinApplicationAlreadyStartedException
 
 fun main() {
     try {
         startKoin {
-            modules(appModule)
+            modules(appModule, platformModule())
         }
     } catch (e: KoinApplicationAlreadyStartedException) {
         // Ignore if already started

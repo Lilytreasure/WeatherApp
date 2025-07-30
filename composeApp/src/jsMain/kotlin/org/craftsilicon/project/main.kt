@@ -14,7 +14,7 @@ fun main() {
     val supportsNotifications = window["supportsNotifications"] as? Boolean ?: false
     try {
         startKoin {
-            modules(appModule)
+            modules(appModule, platformModule())
         }
     } catch (e: KoinApplicationAlreadyStartedException) {
         // Ignore if already started

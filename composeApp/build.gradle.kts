@@ -1,4 +1,4 @@
-
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
@@ -80,11 +80,13 @@ kotlin {
         doFirst {
             val configFile = file("$buildDir/webpack.config.d/fallback.js")
             configFile.parentFile.mkdirs()
-            configFile.writeText("""
+            configFile.writeText(
+                """
             config.resolve.fallback = {
                 "path": false
             };
-        """.trimIndent())
+        """.trimIndent()
+            )
         }
     }
     listOf(
@@ -114,6 +116,7 @@ kotlin {
             implementation(libs.io.insert.koin.koin.core)
             implementation(libs.koin.android)
             implementation(libs.koin.annotations)
+
 
         }
 
@@ -152,6 +155,8 @@ kotlin {
             implementation(libs.insert.koin.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.annotations)
+            //implementation(libs.koin.compose.multiplatform)
+
             //camel image loader
             implementation(libs.kamel.image)
             implementation(libs.kamel.image.default)
@@ -231,6 +236,7 @@ sqldelight {
     databases {
         create("CraftSilliconDb") {
             packageName.set("org.craftsilicon.project.db")
+            generateAsync.set(true)
         }
     }
 }
@@ -238,6 +244,9 @@ sqldelight {
 compose.desktop {
     application {
         mainClass = "org.craftsilicon.MainKt" // Current setting based on your last confirmation
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg)
+        }
     }
 }
 
@@ -249,6 +258,8 @@ val buildWebApp by tasks.creating(Copy::class) {
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
+
+
 
 
 

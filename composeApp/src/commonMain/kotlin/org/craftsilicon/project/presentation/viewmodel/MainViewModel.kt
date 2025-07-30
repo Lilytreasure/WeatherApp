@@ -23,8 +23,10 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
                     units ="metric"
                 )
                 _weather.value = ResultState.SUCCESS(response)
+                println("Error1;;;;"+ _weather.value.toString())
             }catch (e:Exception){
                 _weather.value = ResultState.ERROR(e.message.toString())
+                println("Error2;;;;"+ _weather.value.toString())
             }
         }
     }

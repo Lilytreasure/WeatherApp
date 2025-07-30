@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import org.craftsilicon.initDatabaseContext
 import org.craftsilicon.project.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -24,13 +25,14 @@ class AndroidApp : Application() {
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initDatabaseContext(this)
         /**
          *Android context required by Koin
          */
         try {
             startKoin {
                 androidContext(applicationContext)
-                modules(appModule)
+                modules(appModule, platformModule())
             }
         } catch (e: KoinApplicationAlreadyStartedException) {
             e.printStackTrace()
