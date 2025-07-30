@@ -1,6 +1,6 @@
 [versions]
-agp = "8.5.2"
-android-compileSdk = "34"
+agp = "8.10.1"
+android-compileSdk = "35"
 android-minSdk = "30"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
@@ -11,7 +11,7 @@ androidx-espresso-core = "3.6.1"
 androidx-lifecycle = "2.8.4"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-compose-multiplatform = "1.7.0"
+compose-multiplatform = "1.7.1"
 junit = "4.13.2"
 kotlin = "2.1.0"
 #Added
@@ -27,12 +27,13 @@ kotlinx-coroutines = "1.10.1"
 ktor = "3.2.0"
 kotlinx-serialization = "1.7.3"
 kotlinx-datetime = "0.6.1"
-sqlDelight = "2.0.2"
+sqlDelight = "2.1.0"
 size = "0.5.0"
 coil3 = "3.0.0-alpha08"
 logbackClassic = "1.5.18"
 connectivity = "1.2.0"
 slf4j = "2.0.17"
+koinComposeMultiplatform = "4.1.0"
 
 
 
@@ -63,6 +64,7 @@ kamel-image-default = { module = "media.kamel:kamel-image-default", version.ref 
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotations" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-multiplatform = { module = "io.insert-koin:koin-compose", version.ref = "koinComposeMultiplatform" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }

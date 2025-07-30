@@ -1,12 +1,18 @@
 package org.craftsilicon
 
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import org.craftsilicon.project.db.CraftSilliconDb
-import org.koin.core.scope.Scope
-import java.util.Properties
 
-actual fun Scope.sqlDriverFactory(): SqlDriver {
-    val driver: SqlDriver = JdbcSqliteDriver(  "jdbc:sqlite:SQLDelightDemoDatabase.db", Properties(),  CraftSilliconDb.Schema)
-    return driver
+//actual fun Scope.sqlDriverFactory(): SqlDriver {
+//    val driver: SqlDriver = JdbcSqliteDriver(  "jdbc:sqlite:SQLDelightDemoDatabase.db", Properties(),  CraftSilliconDb.Schema)
+//    return driver
+//}
+
+actual suspend fun provideDbDriver(
+    schema: SqlSchema<QueryResult.AsyncValue<Unit>>
+): SqlDriver {
+    return JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        .also { schema.create(it).await() }
 }
