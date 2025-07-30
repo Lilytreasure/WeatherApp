@@ -9,4 +9,11 @@ fun createDatabase(driver: SqlDriver): CraftSilliconDb {
         driver = driver,
     )
 }
+
+
 expect fun Scope.sqlDriverFactory(): SqlDriver
+
+//expect suspend fun provideDbDriver(
+//    schema: SqlSchema<QueryResult.AsyncValue<Unit>>
+//): SqlDriver
+

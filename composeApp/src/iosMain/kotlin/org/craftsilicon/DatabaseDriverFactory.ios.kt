@@ -11,3 +11,10 @@ actual fun Scope.sqlDriverFactory(): SqlDriver {
         "SQLDelightDemoDatabase.db"
     )
 }
+
+
+//actual suspend fun provideDbDriver(
+//    schema: SqlSchema<QueryResult.AsyncValue<Unit>>
+//): SqlDriver {
+//    return NativeSqliteDriver(schema.synchronous(), "test.db")
+//}

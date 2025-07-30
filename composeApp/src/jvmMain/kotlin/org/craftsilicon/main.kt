@@ -18,9 +18,6 @@ fun main() {
         println("Koin Errror;;;;;;;"+e)
     }
     System.setProperty("apple.awt.application.appearance", "system")
-
-    println("started;;;;;;;;;;;;;;")
-
     application {
         Window(
             onCloseRequest = ::exitApplication,
