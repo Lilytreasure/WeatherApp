@@ -1,5 +1,6 @@
 package org.craftsilicon.project.di
 
+import app.cash.sqldelight.db.SqlDriver
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -9,12 +10,11 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.craftsilicon.createDatabase
 import org.craftsilicon.project.data.remote.CraftSiliconClient
+import org.craftsilicon.project.db.CraftSilliconDb
 import org.craftsilicon.project.domain.repository.Repository
 import org.craftsilicon.project.presentation.viewmodel.MainViewModel
 import org.craftsilicon.project.utils.Constant
-import org.craftsilicon.sqlDriverFactory
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -49,10 +49,10 @@ val appModule = module {
         }
     }
     single { CraftSiliconClient(get()) }
-    factory { sqlDriverFactory() }
-    single { createDatabase(driver = get()) }
     single {
         Repository(get())
     }
     singleOf(::MainViewModel)
 }
+
+class CraftSiliconDatabaseWrapper(val driver: SqlDriver, val instance: CraftSilliconDb)

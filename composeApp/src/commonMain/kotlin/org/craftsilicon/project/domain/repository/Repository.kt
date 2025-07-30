@@ -47,7 +47,7 @@ class Repository(
     /**
      *Cache weather data in local storage
      */
-    private fun cacheWeatherData(city: String, weatherResponse: WeatherResponse) {
+    private suspend fun cacheWeatherData(city: String, weatherResponse: WeatherResponse) {
         val weatherDataString = Json.encodeToString(weatherResponse)
         database.weatherEntityQueries.insertOrReplaceWeather(
             cityName = city,

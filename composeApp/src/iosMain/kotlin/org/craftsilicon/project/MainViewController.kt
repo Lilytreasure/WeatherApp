@@ -8,7 +8,7 @@ import org.koin.core.error.KoinApplicationAlreadyStartedException
 fun MainViewController() = ComposeUIViewController {
     try {
         startKoin {
-            modules(appModule)
+            modules(appModule, platformModule())
         }
     } catch (e: KoinApplicationAlreadyStartedException) {
        // e.printStackTrace()

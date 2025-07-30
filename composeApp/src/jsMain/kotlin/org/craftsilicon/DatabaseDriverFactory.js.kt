@@ -1,15 +1,33 @@
 package org.craftsilicon
 
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.worker.WebWorkerDriver
-import org.craftsilicon.project.db.CraftSilliconDb
 import org.koin.core.scope.Scope
 import org.w3c.dom.Worker
 
-actual fun Scope.sqlDriverFactory(): SqlDriver {
+//actual fun Scope.sqlDriverFactory(): SqlDriver {
+//    val driver = WebWorkerDriver(
+//        Worker(
+//            js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)""")
+//        )
+//    )
+//    return  driver
+//}
+
+
+val driver2 = WebWorkerDriver(
+    Worker(
+        js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)""")
+    )
+)
+actual suspend fun provideDbDriver(
+    schema: SqlSchema<QueryResult.AsyncValue<Unit>>
+): SqlDriver {
     return WebWorkerDriver(
         Worker(
             js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)""")
         )
-    ).also {  CraftSilliconDb.Schema}
+    ).also { schema.create(it).await() }
 }

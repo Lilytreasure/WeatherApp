@@ -1,4 +1,4 @@
-
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
@@ -68,6 +68,27 @@ kotlin {
         }
     }
     jvm()
+    js {
+        binaries.executable()
+        browser {
+            commonWebpackConfig {
+                outputFileName = "weather-app-js.js"
+            }
+        }
+    }
+    tasks.withType<org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack>().configureEach {
+        doFirst {
+            val configFile = file("$buildDir/webpack.config.d/fallback.js")
+            configFile.parentFile.mkdirs()
+            configFile.writeText(
+                """
+            config.resolve.fallback = {
+                "path": false
+            };
+        """.trimIndent()
+            )
+        }
+    }
     listOf(
         iosX64(),
         iosArm64(),
@@ -78,12 +99,6 @@ kotlin {
             isStatic = false
         }
     }
-
-
-    js {
-        browser()
-    }
-
 
     sourceSets {
 
@@ -101,6 +116,7 @@ kotlin {
             implementation(libs.io.insert.koin.koin.core)
             implementation(libs.koin.android)
             implementation(libs.koin.annotations)
+
 
         }
 
@@ -139,6 +155,8 @@ kotlin {
             implementation(libs.insert.koin.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.annotations)
+            //implementation(libs.koin.compose.multiplatform)
+
             //camel image loader
             implementation(libs.kamel.image)
             implementation(libs.kamel.image.default)
@@ -174,9 +192,9 @@ kotlin {
         }
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation("app.cash.sqldelight:web-worker-driver:2.0.2")
-            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.0.2"))
-            implementation(npm("sql.js", "1.6.2"))
+            implementation("app.cash.sqldelight:web-worker-driver:2.1.0")
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
+            implementation(npm("sql.js", "1.8.0"))
             implementation(devNpm("copy-webpack-plugin", "9.1.0"))
         }
         jvmToolchain(17)
@@ -218,6 +236,7 @@ sqldelight {
     databases {
         create("CraftSilliconDb") {
             packageName.set("org.craftsilicon.project.db")
+            generateAsync.set(true)
         }
     }
 }
@@ -225,8 +244,22 @@ sqldelight {
 compose.desktop {
     application {
         mainClass = "org.craftsilicon.MainKt" // Current setting based on your last confirmation
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg)
+        }
     }
 }
+
+val buildWebApp by tasks.creating(Copy::class) {
+    val jsDist = "jsBrowserDistribution"
+    from(tasks.named(jsDist).get().outputs.files)
+
+    into(layout.buildDirectory.dir("webApp"))
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+
 
 
 
