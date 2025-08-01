@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "path-browserify": "^1.0.1"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^13.0.0",
+    "sql.js": "^1.13.0"
   }
 }
