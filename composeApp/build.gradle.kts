@@ -69,12 +69,13 @@ kotlin {
     }
     jvm()
     js {
-        binaries.executable()
         browser {
             commonWebpackConfig {
                 outputFileName = "weather-app-js.js"
+                configDirectory = file("$projectDir/src/jsMain/webpack.config.d")
             }
         }
+        binaries.executable()
     }
     tasks.withType<org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack>().configureEach {
         doFirst {
