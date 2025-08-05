@@ -38,6 +38,8 @@ class AppActivity : ComponentActivity() {
             e.printStackTrace()
         }
         enableEdgeToEdge()
-        setContent { App() }
+        setContent {
+            App()
+        }
     }
 }
